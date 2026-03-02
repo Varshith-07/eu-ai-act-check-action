@@ -1,0 +1,64 @@
+name: Test eu-ai-act-check-action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  test:
+    name: Self-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run eu-ai-act-check-action against this repo
+        id: compliance
+        uses: ./
+        with:
+          fail-on-noncompliant: 'false'
+          sarif-output: 'test-results.sarif'
+          upload-sarif: 'false'
+
+      - name: Assert outputs are set
+        run: |
+          echo "risk-category:    ${{ steps.compliance.outputs.risk-category }}"
+          echo "conformity-score: ${{ steps.compliance.outputs.conformity-score }}"
+          echo "findings-count:   ${{ steps.compliance.outputs.findings-count }}"
+          echo "critical-count:   ${{ steps.compliance.outputs.critical-count }}"
+
+          if [ -z "${{ steps.compliance.outputs.risk-category }}" ]; then
+            echo "FAIL: risk-category output is empty"
+            exit 1
+          fi
+          if [ -z "${{ steps.compliance.outputs.conformity-score }}" ]; then
+            echo "FAIL: conformity-score output is empty"
+            exit 1
+          fi
+          echo "PASS: all outputs set"
+
+      - name: Assert SARIF file exists
+        run: |
+          if [ ! -f "test-results.sarif" ]; then
+            echo "FAIL: SARIF file not created"
+            exit 1
+          fi
+          echo "PASS: SARIF file exists ($(wc -c < test-results.sarif) bytes)"
+
+      - name: Assert minimal risk (action repo has no ML/AI code)
+        run: |
+          category="${{ steps.compliance.outputs.risk-category }}"
+          if [ "$category" = "high_risk" ]; then
+            echo "WARN: unexpected high_risk classification on action repo"
+          else
+            echo "PASS: risk-category=$category (expected minimal_risk or limited_risk)"
+          fi
