@@ -1,0 +1,85 @@
+name: 'EU AI Act Compliance Check'
+description: 'Check AI systems for EU AI Act conformity: Annex III risk classification, Art.9/13/14/22. SARIF output. No API key.'
+author: 'nhomyk'
+
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  repo-path:
+    description: 'Path to the repository to scan (default: current directory)'
+    required: false
+    default: '.'
+
+  fail-on-noncompliant:
+    description: 'Exit with code 1 if critical compliance gaps are found'
+    required: false
+    default: 'false'
+
+  sarif-output:
+    description: 'Filename for the SARIF output file'
+    required: false
+    default: 'eu-ai-act-results.sarif'
+
+  upload-sarif:
+    description: 'Upload SARIF to GitHub Code Scanning (requires security-events: write)'
+    required: false
+    default: 'true'
+
+  category:
+    description: 'GitHub Code Scanning SARIF category'
+    required: false
+    default: 'eu-ai-act'
+
+outputs:
+  conformity-score:
+    description: 'Conformity score 0.0–1.0 (1.0 = fully compliant)'
+    value: ${{ steps.scan.outputs.conformity_score }}
+  risk-category:
+    description: 'Annex III risk tier: high_risk | limited_risk | minimal_risk'
+    value: ${{ steps.scan.outputs.risk_category }}
+  annex-iii-categories:
+    description: 'Matched Annex III high-risk categories (comma-separated)'
+    value: ${{ steps.scan.outputs.annex_iii_categories }}
+  findings-count:
+    description: 'Total number of compliance findings'
+    value: ${{ steps.scan.outputs.findings_count }}
+  critical-count:
+    description: 'Number of critical compliance gaps'
+    value: ${{ steps.scan.outputs.critical_count }}
+  sarif-file:
+    description: 'Path to the generated SARIF output file'
+    value: ${{ inputs.sarif-output }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install AgenticQA compliance scanner
+      shell: bash
+      run: |
+        pip install --quiet --upgrade pip
+        pip install --quiet \
+          "agenticqa @ git+https://github.com/nhomyk/AgenticQA.git#subdirectory=AgenticQA"
+
+    - name: Run EU AI Act Compliance Check
+      id: scan
+      shell: bash
+      env:
+        SCAN_REPO_PATH: ${{ inputs.repo-path }}
+        SARIF_OUTPUT: ${{ inputs.sarif-output }}
+        FAIL_ON_NONCOMPLIANT: ${{ inputs.fail-on-noncompliant }}
+      run: python ${{ github.action_path }}/scan.py
+
+    - name: Upload SARIF to GitHub Code Scanning
+      if: inputs.upload-sarif == 'true' && always()
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: ${{ inputs.sarif-output }}
+        category: ${{ inputs.category }}
+      continue-on-error: true
